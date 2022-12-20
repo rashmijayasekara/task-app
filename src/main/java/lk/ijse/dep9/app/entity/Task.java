@@ -20,7 +20,7 @@ public class Task implements Serializable {
     @ManyToOne
     private Project project;
 
-    public static enum Status{
+    public enum Status{
         COMPLETED, NOT_COMPLETED
     }
 

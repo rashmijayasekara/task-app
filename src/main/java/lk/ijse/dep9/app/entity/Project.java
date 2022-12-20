@@ -14,7 +14,7 @@ import java.util.Set;
 public class Project implements SuperEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
     @Column(nullable = false)
     private String name;
     @ManyToOne
