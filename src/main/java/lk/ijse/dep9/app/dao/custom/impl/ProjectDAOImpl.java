@@ -1,10 +1,8 @@
 package lk.ijse.dep9.app.dao.custom.impl;
 
 import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.custom.TaskDAO;
 import lk.ijse.dep9.app.entity.Project;
-import lk.ijse.dep9.app.entity.Task;
-import lk.ijse.dep9.app.entity.User;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -104,5 +102,22 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public boolean existsById(Integer pk) {
        return findById(pk).isPresent();
+    }
+
+    @Override
+    public List<Project> findAllProjectsByUserName(String username) {
+        List<Project> projectList=new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Project WHERE username=?");
+            statement.setString(1,username);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                projectList.add(new Project(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("username")));
+            }
+            return projectList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
