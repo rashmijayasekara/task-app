@@ -8,16 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-@Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    @Id
+
     private String username;
-    @Column(nullable = false)
     private String password;
-    @Column(name = "full_name",nullable = false)
     private String fullName;
 
 }
