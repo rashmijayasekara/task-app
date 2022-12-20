@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class User implements Serializable, SuperEntity {
 
     private String username;
     private String password;

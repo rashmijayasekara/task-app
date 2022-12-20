@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data @AllArgsConstructor @NoArgsConstructor
-public class Task implements Serializable {
+public class Task implements Serializable, SuperEntity {
 
     private int id;
     private String content;
