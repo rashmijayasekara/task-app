@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Transformer {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public Transformer(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public User toUser(UserDTO userDTO){
         return modelMapper.map(userDTO,User.class);

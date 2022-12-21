@@ -3,11 +3,10 @@ package lk.ijse.dep9.app;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.web.context.annotation.RequestScope;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
