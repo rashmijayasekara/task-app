@@ -28,11 +28,11 @@ public class WebRootConfig {
         jndiObjFBean.setExpectedType(DataSource.class);
         return jndiObjFBean;
     }
-    @Bean
-    @RequestScope
-    public Connection connection(DataSource dataSource){
-        return DataSourceUtils.getConnection(dataSource);
-    }
+//    @Bean
+//    @RequestScope
+//    public Connection connection(DataSource dataSource){
+//        return DataSourceUtils.getConnection(dataSource);
+//    }
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource){
