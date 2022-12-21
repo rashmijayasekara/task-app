@@ -18,11 +18,11 @@ import java.util.Optional;
 @Component
 
 public class ProjectDAOImpl implements ProjectDAO {
-    private final Connection connection;
+
     private JdbcTemplate jdbc;
 
-    public ProjectDAOImpl(Connection connection,JdbcTemplate jdbcTemplate) {
-        this.connection = connection;
+    public ProjectDAOImpl(JdbcTemplate jdbcTemplate) {
+
         this.jdbc=jdbcTemplate;
     }
 
