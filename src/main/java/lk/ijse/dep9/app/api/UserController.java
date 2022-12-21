@@ -30,7 +30,7 @@ public class UserController {
 
     @GetMapping(value = "/me",produces = "application/json")
     public UserDTO getUserAccountDetails(){
-        System.out.println("getuserAccountDetails");
+        System.out.println("get user AccountDetails");
         return new UserDTO();
     }
 
