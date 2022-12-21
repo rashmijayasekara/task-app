@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         userDAO.save(transformer.toUser(userDTO));
 //        if (true) throw new RuntimeException();
-        userDAO.save(new User("dsff","dsfsdf","dsfsdfsd"));
+//        userDAO.save(new User("dsff","dsfsdf","dsfsdfsd"));
 
 
 

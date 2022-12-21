@@ -5,6 +5,7 @@ import lk.ijse.dep9.app.dao.util.ConnectionUtil;
 import lk.ijse.dep9.app.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -19,94 +20,125 @@ import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
     private final Connection connection;
+    private final JdbcTemplate jdbc;
 
-    public UserDAOImpl(Connection connection) {
+    public UserDAOImpl(Connection connection, JdbcTemplate jdbc) {
         this.connection = connection;
+        this.jdbc = jdbc;
     }
 
     @Override
     public User save(User user) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO User(username, full_name, password) VALUES (?,?,?)");
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getFullName());
-            statement.setString(3, user.getPassword());
-            statement.executeUpdate();
-            return user;
-        }catch (SQLException e){
-            throw new RuntimeException(e);
-        }
+        jdbc.update("INSERT INTO User(username, full_name, password) VALUES (?,?,?)", user.getUsername(),user.getFullName(),user.getPassword());
+        return user;
+//        try {
+//            PreparedStatement statement = connection.prepareStatement("INSERT INTO User(username, full_name, password) VALUES (?,?,?)");
+//            statement.setString(1, user.getUsername());
+//            statement.setString(2, user.getFullName());
+//            statement.setString(3, user.getPassword());
+//            statement.executeUpdate();
+//            return user;
+//        }catch (SQLException e){
+//            throw new RuntimeException(e);
+//        }
 
     }
 
     @Override
     public void update(User user) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE User SET full_name=?, password=? WHERE username=?");
-            statement.setString(1,user.getFullName());
-            statement.setString(2,user.getPassword());
-            statement.setString(3,user.getUsername());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbc.update("UPDATE User SET full_name=?, password=? WHERE username=?",user.getFullName(),user.getPassword(),user.getUsername());
+//
+//        try {
+//            PreparedStatement statement = connection.prepareStatement();
+//            statement.setString(1,user.getFullName());
+//            statement.setString(2,user.getPassword());
+//            statement.setString(3,user.getUsername());
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
     @Override
     public void deleteById(String username) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM User WHERE username=?");
-            statement.setString(1,username);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbc.update("DELETE FROM User WHERE username=?",username);
+//        try {
+//            PreparedStatement statement = connection.prepareStatement("DELETE FROM User WHERE username=?");
+//            statement.setString(1,username);
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
     @Override
     public Optional<User> findById(String username) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT full_name,password FROM User WHERE username=?");
-            statement.setString(1,username);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()){
-                return Optional.of(new User(username, resultSet.getString("password"),resultSet.getString("full_name")));
+        return jdbc.query("SELECT full_name,password FROM User WHERE username=?",rst -> {
+            if (rst.next()){
+                return Optional.of(new User(username,rst.getString("password"),rst.getString("full_name")));
+            }else {
+                return Optional.empty();
             }
-            return Optional.empty();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        },username);
+//        try {
+//            PreparedStatement statement = connection.prepareStatement();
+//            statement.setString(1,username);
+//            ResultSet resultSet = statement.executeQuery();
+//            if (resultSet.next()){
+//                return Optional.of(new User(username, resultSet.getString("password"),resultSet.getString("full_name")));
+//            }
+//            return Optional.empty();
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Override
     public List<User> findAll() {
-        List<User> userList=new ArrayList<>();
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM User");
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                userList.add(new User(resultSet.getString("username"),resultSet.getString("password"),resultSet.getString("full_name")));
+
+        return jdbc.query("SELECT * FROM User",rst->{
+            List<User> userList=new ArrayList<>();
+            while (rst.next()){
+                userList.add(new User(rst.getString("username"),rst.getString("password"),rst.getString("full_name")));
             }
             return userList;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        });
+
+
+
+
+//        try {
+//            PreparedStatement statement = connection.prepareStatement("SELECT * FROM User");
+//            ResultSet resultSet = statement.executeQuery();
+//            while (resultSet.next()){
+//                userList.add(new User(resultSet.getString("username"),resultSet.getString("password"),resultSet.getString("full_name")));
+//            }
+//            return userList;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
     @Override
     public long count() {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT COUNT(username) FROM User");
-            ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            return  resultSet.getLong(1);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbc.queryForObject("SELECT COUNT(username) FROM User",long.class);
+
+//        return jdbc.query("SELECT COUNT(username) FROM User", rst->{
+//            rst.next();
+//            return rst.getLong(1);
+//        });
+//        try {
+//            PreparedStatement statement = connection.prepareStatement("SELECT COUNT(username) FROM User");
+//            ResultSet resultSet = statement.executeQuery();
+//            resultSet.next();
+//            return  resultSet.getLong(1);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Override
