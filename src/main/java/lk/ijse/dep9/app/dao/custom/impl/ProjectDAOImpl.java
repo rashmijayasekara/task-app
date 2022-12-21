@@ -16,11 +16,10 @@ import java.util.Optional;
 @Component
 
 public class ProjectDAOImpl implements ProjectDAO {
-    @Autowired
-    private Connection connection;
+    private final Connection connection;
 
-    public ProjectDAOImpl() {
-        this.connection = ConnectionUtil.getConnection();
+    public ProjectDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override

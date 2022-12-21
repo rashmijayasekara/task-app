@@ -11,10 +11,9 @@ import java.sql.Connection;
 @Component
 
 public class QueryDAOImpl implements QueryDAO{
-    @Autowired
-    private Connection connection;
+    private final Connection connection;
 
-    public QueryDAOImpl() {
-        this.connection = ConnectionUtil.getConnection();
+    public QueryDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 }
