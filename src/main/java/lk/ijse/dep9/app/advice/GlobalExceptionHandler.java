@@ -1,5 +1,6 @@
 package lk.ijse.dep9.app.advice;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,16 @@ public class GlobalExceptionHandler {
         List<String> validationErrorList = e.getFieldErrors().stream().map(err -> err.getField() + ": " + err.getDefaultMessage()).collect(Collectors.toList());
         errAttributes.put("validation errors",validationErrorList);
        return errAttributes;
+    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Map<String, Object> duplicateEntityExceptionHandler(){
+        Map<String, Object> errAttributes=new LinkedHashMap<>();
+        errAttributes.put("status",HttpStatus.CONFLICT.value());
+        errAttributes.put("error",HttpStatus.CONFLICT.getReasonPhrase());
+        errAttributes.put("message","Duplicate Entry Found");
+        errAttributes.put("timestamp",new Date().toString());
+        return errAttributes;
     }
 
 }
