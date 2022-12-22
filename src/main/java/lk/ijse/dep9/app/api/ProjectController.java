@@ -1,28 +1,57 @@
 package lk.ijse.dep9.app.api;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lk.ijse.dep9.app.dto.ProjectDTO;
+import lk.ijse.dep9.app.service.custom.ProjectTaskService;
+import lk.ijse.dep9.app.util.ValidationGroups;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
 
-    public void createNewProject(){
+    private ProjectTaskService projectTaskService;
 
-    }
-    public void getAllProjects(){
-
-    }
-    public void getProject(){
-
+    public ProjectController(ProjectTaskService projectTaskService) {
+        this.projectTaskService = projectTaskService;
     }
 
-    public void renameProject(){
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(consumes = "application/json",produces = "application/json")
+    public ProjectDTO createNewProject(@Validated(ValidationGroups.Create.class) ProjectDTO projectDTO, @RequestAttribute String username){
+
+        projectDTO.setUsername(username);
+        return projectTaskService.createNewProject(projectDTO);
+    }
+    @GetMapping(produces = "application/json")
+    public List<ProjectDTO> getAllProjects(@RequestAttribute String username){
+        return projectTaskService.getAllProjects(username);
+    }
+
+    @GetMapping(value = "/{projectId:\\d+}",produces = "application/json")
+    public ProjectDTO getProject(@PathVariable Integer projectId,@RequestAttribute String username){
+
+        return projectTaskService.getProjectDetails(username,projectId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{projectId:\\d+}",consumes = "application/json")
+    public void renameProject(@PathVariable int projectId, @RequestBody ProjectDTO projectDTO, @RequestAttribute String username){
+        projectDTO.setId(projectId);
+        projectDTO.setUsername(username);
+        projectTaskService.renameProject(projectDTO);
 
     }
-    public void deleteProject(){
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{projectId:\\d+}")
+    public void deleteProject(@PathVariable int projectId, @RequestAttribute String username){
+
+        projectTaskService.deleteProject(username,projectId);
     }
 }
