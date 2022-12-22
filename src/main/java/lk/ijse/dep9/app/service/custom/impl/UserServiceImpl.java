@@ -43,4 +43,10 @@ public class UserServiceImpl implements UserService {
         }
         throw new AuthenticationException();
     }
+
+    @Override
+    public UserDTO getUserAccountDetails(String username) {
+        UserDTO userDTO = userDAO.findById(username).map(transformer::toUserDTO).get();
+        return userDTO;
+    }
 }

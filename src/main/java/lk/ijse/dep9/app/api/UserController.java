@@ -37,9 +37,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/me",produces = "application/json")
-    public UserDTO getUserAccountDetails(){
-        System.out.println("get user AccountDetails");
-        return new UserDTO();
+    public UserDTO getUserAccountDetails(@RequestAttribute String username){
+        // stored the username in the request at Security filter
+        return userService.getUserAccountDetails(username);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
