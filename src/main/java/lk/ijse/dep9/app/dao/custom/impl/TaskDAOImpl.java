@@ -7,6 +7,7 @@ import lk.ijse.dep9.app.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,8 @@ import java.util.Optional;
 @Component
 
 public class TaskDAOImpl implements TaskDAO {
-    private JdbcTemplate jdbcTemplate;
-
+    private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Task> taskRowMapper = (rs, rowNum) -> new Task(rs.getInt("id"), rs.getString("content"), Task.Status.valueOf(rs.getString("status")), rs.getInt("project_id"));
     public TaskDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -56,7 +57,10 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public void update(Task task) {
-        jdbcTemplate.update("UPDATE Task SET content=?, status=?,project_id=? WHERE id=?",task.getContent(),task.getStatus().toString(),task.getProjectId(),task.getId());
+
+        jdbcTemplate.update("UPDATE Task SET content=?, status=?, project_id=? WHERE id=?", task.getContent(), task.getStatus().toString(), task.getProjectId(), task.getId());
+
+       // jdbcTemplate.update("UPDATE Task SET content=?, status=?,project_id=? WHERE id=?",task.getContent(),task.getStatus().toString(),task.getProjectId(),task.getId());
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("UPDATE Task SET content=?, status=?,project_id=? WHERE id=?");
 //            statement.setString(1,task.getContent());
@@ -87,9 +91,13 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public Optional<Task> findById(Integer pk) {
-        return Optional.ofNullable(jdbcTemplate.query("SELECT project_id,content,status FROM Task WHERE id=?",rst->{
-           return new Task(rst.getInt("id"),rst.getString("content"),Task.Status.valueOf(rst.getString("status")),rst.getInt("project_id"));
-        },pk));
+
+        return jdbcTemplate.query("SELECT * FROM Task WHERE id=?", taskRowMapper, pk).stream().findFirst();
+
+
+//        return Optional.ofNullable(jdbcTemplate.query("SELECT project_id,content,status FROM Task WHERE id=?",rst->{
+//           return new Task(rst.getInt("id"),rst.getString("content"),Task.Status.valueOf(rst.getString("status")),rst.getInt("project_id"));
+//        },pk));
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("SELECT project_id,content,status FROM Task WHERE id=?");
 //            statement.setInt(1,pk);
@@ -105,6 +113,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public List<Task> findAll() {
+        return jdbcTemplate.query("SELECT * FROM Task", taskRowMapper);
 //        jdbcTemplate.query("SELECT * FROM Task",(rs, rowNum) -> new Task(rs.getInt("id"),rs.getString("content"),Task.Status.valueOf(rs.getString("status"),rs.getString("project_id"))));
 //        List<Task> taskList=new ArrayList<>();
 //        try {
@@ -118,11 +127,12 @@ public class TaskDAOImpl implements TaskDAO {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-        return null;
+
     }
 
     @Override
     public long count() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM Task", Long.class);
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("SELECT COUNT(id) FROM Task");
 //            ResultSet resultSet = statement.executeQuery();
@@ -131,7 +141,7 @@ public class TaskDAOImpl implements TaskDAO {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-    return 0;
+
     }
 
     @Override
@@ -141,6 +151,9 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public List<Task> findAllTaskByProjectId(Integer projectId) {
+
+        return jdbcTemplate.query("SELECT * FROM Task WHERE project_id = ?", taskRowMapper, projectId);
+
 //        return jdbcTemplate.query("SELECT * FROM Task WHERE project_id=?",(rst,rowIndex)->{
 //            return new Task(rst.getInt("id"),rst.getString("content"), Task.Status.valueOf(rst.getString("status"),rst.getString("project_id")));
 //        },projectId);
@@ -156,6 +169,6 @@ public class TaskDAOImpl implements TaskDAO {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-        return null;
+
     }
 }

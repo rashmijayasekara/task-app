@@ -1,17 +1,12 @@
 package lk.ijse.dep9.app.dao.custom.impl;
 
 import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.util.ConnectionUtil;
 import lk.ijse.dep9.app.entity.Project;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-
-
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +14,8 @@ import java.util.Optional;
 
 public class ProjectDAOImpl implements ProjectDAO {
 
-    private JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
+    private final RowMapper<Project> projectRowMapper=(rs,rowNum)->new Project(rs.getInt("id"),rs.getString("name"),rs.getString("username"));
 
     public ProjectDAOImpl(JdbcTemplate jdbcTemplate) {
 
@@ -53,7 +49,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public void update(Project project) {
-        jdbc.update("UPDATE Project SET name=? AND username=? WHERE id=?",project.getId());
+        jdbc.update("UPDATE Project SET name=? AND username =? WHERE id=?", project.getName(), project.getUsername(), project.getId());
+        // jdbc.update("UPDATE Project SET name=? AND username=? WHERE id=?",project.getId());
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("UPDATE Project SET name=? AND username=? WHERE id=?");
 //            statement.setString(1,project.getName());
@@ -81,9 +78,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public Optional<Project> findById(Integer pk) {
-        return jdbc.query("SELECT name,username FROM Project WHERE id=?",rst->{
-            return Optional.of(new Project(rst.getInt("id"),rst.getString("name"),rst.getString("username")));
-        },pk);
+        return jdbc.query("SELECT * FROM Project WHERE id=?", projectRowMapper, pk).stream().findFirst();
+        // return jdbc.query("SELECT name,username FROM Project WHERE id=?",projectRowMapper,pk);
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("SELECT name,username FROM Project WHERE id=?");
 //            statement.setInt(1,pk);
@@ -99,8 +95,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public List<Project> findAll() {
-        return jdbc.query("SELECT * FROM Project",(rst,rowIndex)->
-            new Project(rst.getInt("id"),rst.getString("name"),rst.getString("username")));
+        return jdbc.query("SELECT * FROM Project",projectRowMapper);
 //        List<Project> projectList= new ArrayList<>();
 //        try {
 //            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Project");
@@ -134,8 +129,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<Project> findAllProjectsByUserName(String username) {
 
-        return jdbc.query("SELECT * FROM Project WHERE username=?",(rst,rowIndex)->
-            new Project(rst.getInt("id"),rst.getString("name"),rst.getString("username")),username);
+        return jdbc.query("SELECT * FROM Project WHERE username=?",projectRowMapper,username);
 //        List<Project> projectList=new ArrayList<>();
 //
 //        try {
