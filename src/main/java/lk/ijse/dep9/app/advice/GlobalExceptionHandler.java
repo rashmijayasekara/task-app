@@ -46,15 +46,15 @@ public class GlobalExceptionHandler {
         errAttributes.put("timestamp",new Date().toString());
         return errAttributes;
     }
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(AccessDeniedException.class)
-    public Map<String, Object> emptyResultDataAccessExceptionHandler(){
-        Map<String, Object> errAttributes=new LinkedHashMap<>();
-        errAttributes.put("status",HttpStatus.NOT_FOUND.value());
-        errAttributes.put("error",HttpStatus.NOT_FOUND.getReasonPhrase());
-        errAttributes.put("message","Not Found");
-        errAttributes.put("timestamp",new Date().toString());
-        return errAttributes;
-    }
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public Map<String, Object> emptyResultDataAccessExceptionHandler(){
+//        Map<String, Object> errAttributes=new LinkedHashMap<>();
+//        errAttributes.put("status",HttpStatus.NOT_FOUND.value());
+//        errAttributes.put("error",HttpStatus.NOT_FOUND.getReasonPhrase());
+//        errAttributes.put("message","Not Found");
+//        errAttributes.put("timestamp",new Date().toString());
+//        return errAttributes;
+//    }
 
 }
