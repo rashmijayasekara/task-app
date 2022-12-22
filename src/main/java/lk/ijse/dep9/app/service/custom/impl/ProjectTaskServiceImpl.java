@@ -78,4 +78,19 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public void deleteTask(String username, TaskDTO taskDTO) {
 
     }
+
+    @Override
+    public TaskDTO getTaskDetails(String username, TaskDTO taskDTO) {
+        return null;
+    }
+
+    @Override
+    public void getAllTasks(String username, int projectId) {
+
+    }
+
+    @Override
+    public void updateTaskStatus(String username, TaskDTO taskDTO, boolean completed) {
+
+    }
 }

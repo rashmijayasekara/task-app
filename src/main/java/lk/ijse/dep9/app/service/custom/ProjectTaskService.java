@@ -26,7 +26,7 @@ public interface ProjectTaskService extends SuperService {
 
     void deleteTask(String username, TaskDTO taskDTO);
 
-    void getTaskDetails(String username, TaskDTO taskDTO);
+    TaskDTO getTaskDetails(String username, TaskDTO taskDTO);
 
     void getAllTasks(String username, int projectId);
 

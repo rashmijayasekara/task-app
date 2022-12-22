@@ -39,7 +39,7 @@ public class TaskController {
     }
     @GetMapping(value = "/{taskId:\\d+}",produces = "application/json")
     public TaskDTO getTaskDetails(@RequestAttribute String username,@PathVariable int projectId,@PathVariable int id){
-        taskService.getTaskDetails(username,new TaskDTO(id,"",projectId));
+        return taskService.getTaskDetails(username,new TaskDTO(id,"",projectId));
     }
     @GetMapping
     public void getAllTasks(@RequestAttribute String username,@PathVariable int projectId){

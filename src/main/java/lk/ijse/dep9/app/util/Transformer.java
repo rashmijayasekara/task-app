@@ -1,8 +1,10 @@
 package lk.ijse.dep9.app.util;
 
 import lk.ijse.dep9.app.dto.ProjectDTO;
+import lk.ijse.dep9.app.dto.TaskDTO;
 import lk.ijse.dep9.app.dto.UserDTO;
 import lk.ijse.dep9.app.entity.Project;
+import lk.ijse.dep9.app.entity.Task;
 import lk.ijse.dep9.app.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -31,5 +33,12 @@ public class Transformer {
     }
     public ProjectDTO toProjectDTO(Project project){
         return modelMapper.map(project,ProjectDTO.class);
+    }
+
+    public Task toTask(TaskDTO taskDTO){
+        return modelMapper.map(taskDTO,Task.class);
+    }
+    public TaskDTO toTaskDTO(Task task){
+        return modelMapper.map(task,TaskDTO.class);
     }
 }
