@@ -10,7 +10,10 @@ public interface ProjectTaskService extends SuperService {
 
     List<ProjectDTO> getAllProjects(String username);
 
-    ProjectDTO getProjectDetails(String username, Integer projectId);
+
+
+
+    ProjectDTO getProjectDetails(String username, int projectId);
 
     void renameProject(ProjectDTO projectDTO);
 
