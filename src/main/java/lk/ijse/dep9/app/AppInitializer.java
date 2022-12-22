@@ -1,6 +1,10 @@
 package lk.ijse.dep9.app;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +17,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
-@Configuration
-@ComponentScan
-@EnableWebMvc
-@EnableWebSecurity
-public class WebAppConfig {
+//@Configuration
+//@ComponentScan
+//@EnableWebMvc
+//@EnableWebSecurity
+
+@SpringBootApplication
+public class AppInitializer {
+    public static void main(String[] args) {
+        SpringApplication.run(AppInitializer.class,args); // starting to run the spring boot application
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests().requestMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
-                .requestMatchers("/api/v1/auth/**").permitAll()
+        return http.authorizeHttpRequests().mvcMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
+                .mvcMatchers("/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
@@ -45,5 +54,9 @@ public class WebAppConfig {
         }
     };
     }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();}
 
 }

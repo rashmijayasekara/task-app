@@ -1,10 +1,8 @@
 package lk.ijse.dep9.app.api;
 
 import lk.ijse.dep9.app.dto.TaskDTO;
-import lk.ijse.dep9.app.entity.Task;
 import lk.ijse.dep9.app.service.custom.ProjectTaskService;
 import lk.ijse.dep9.app.util.ValidationGroups;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
