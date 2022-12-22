@@ -1,21 +1,27 @@
 package lk.ijse.dep9.app.advice;
 
 import lk.ijse.dep9.app.dao.custom.ProjectDAO;
+import lk.ijse.dep9.app.dao.custom.TaskDAO;
 import lk.ijse.dep9.app.dto.ProjectDTO;
+import lk.ijse.dep9.app.dto.TaskDTO;
 import lk.ijse.dep9.app.entity.Project;
+import lk.ijse.dep9.app.entity.Task;
 import lk.ijse.dep9.app.exceptions.AccessDeniedException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Aspect
 @Component
 @Slf4j
 public class ServiceAdvisor {
     private ProjectDAO projectDAO;
+    private TaskDAO taskDAO;
 
     public ServiceAdvisor(ProjectDAO projectDAO) {
         this.projectDAO = projectDAO;
@@ -56,6 +62,19 @@ public class ServiceAdvisor {
 //        log.debug("Before the service method");
 //        Project projectEntity = projectDAO.findById(projectDTO.getId()).orElseThrow(()->new EmptyResultDataAccessException(1));
 //        if(!projectEntity.getUsername().matches(projectDTO.getUsername())) throw new AccessDeniedException();
+    }
+
+
+    @Before(value = "serviceAuthorization() && args(username,task, ..)", argNames = "username,task")
+    private void serviceAuthorization(String username, TaskDTO task){
+        executeAdvice(username, task.getProjectId());
+        if (task.getId()!=null){
+            Task taskEntity = taskDAO.findById(task.getId()).orElseThrow(() -> new EmptyResultDataAccessException(1));
+            if (taskDAO.findAllTaskByProjectId(taskEntity.getProjectId()).stream().noneMatch(t-> t.getId()== task.getId())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
     }
     private void executeAdvice(String username, int projectId){
         log.debug("Before the service method");

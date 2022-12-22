@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/projects/{projectId:\\d+}/tasks")
 @CrossOrigin
@@ -42,8 +44,8 @@ public class TaskController {
         return taskService.getTaskDetails(username,new TaskDTO(id,"",projectId));
     }
     @GetMapping
-    public void getAllTasks(@RequestAttribute String username,@PathVariable int projectId){
-        taskService.getAllTasks(username,projectId);
+    public List<TaskDTO> getAllTasks(@RequestAttribute String username, @PathVariable int projectId){
+        return taskService.getAllTasks(username,projectId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
