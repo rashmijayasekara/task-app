@@ -19,5 +19,13 @@ public class TaskDTO implements Serializable {
     @Null(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "Task ID can't be specified")
     private Integer projectId;
 
+    @Null(message = "Task status is read only")
+    private Boolean isCompleted;
 
+
+    public TaskDTO(Integer id, String content, Integer projectId) {
+        this.id = id;
+        this.content = content;
+        this.projectId = projectId;
+    }
 }
