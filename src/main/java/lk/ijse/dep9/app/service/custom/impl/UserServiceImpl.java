@@ -1,8 +1,8 @@
 package lk.ijse.dep9.app.service.custom.impl;
 
-import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.custom.TaskDAO;
-import lk.ijse.dep9.app.dao.custom.UserDAO;
+import lk.ijse.dep9.app.repository.ProjectRepository;
+import lk.ijse.dep9.app.repository.TaskRepository;
+import lk.ijse.dep9.app.repository.UserRepository;
 import lk.ijse.dep9.app.dto.UserDTO;
 import lk.ijse.dep9.app.entity.Project;
 import lk.ijse.dep9.app.entity.Task;
@@ -24,12 +24,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 
-    private UserDAO userDAO;
-    private final ProjectDAO projectDAO;
-    private final TaskDAO taskDAO;
+    private UserRepository userDAO;
+    private final ProjectRepository projectDAO;
+    private final TaskRepository taskDAO;
     private Transformer transformer;
 
-    public UserServiceImpl(UserDAO userDAO, ProjectDAO projectDAO, TaskDAO taskDAO, Transformer transformer) {
+    public UserServiceImpl(UserRepository userDAO, ProjectRepository projectDAO, TaskRepository taskDAO, Transformer transformer) {
         this.userDAO = userDAO;
         this.projectDAO = projectDAO;
         this.taskDAO = taskDAO;
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserAccountDetails(UserDTO userDTO) {
         userDTO.setPassword(DigestUtils.sha256Hex(userDTO.getPassword()));
-        userDAO.update(transformer.toUser(userDTO));
+        userDAO.save(transformer.toUser(userDTO));
     }
 
     @Override

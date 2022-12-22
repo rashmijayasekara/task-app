@@ -1,7 +1,7 @@
 package lk.ijse.dep9.app.advice;
 
-import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.custom.TaskDAO;
+import lk.ijse.dep9.app.repository.ProjectRepository;
+import lk.ijse.dep9.app.repository.TaskRepository;
 import lk.ijse.dep9.app.dto.ProjectDTO;
 import lk.ijse.dep9.app.dto.TaskDTO;
 import lk.ijse.dep9.app.entity.Project;
@@ -20,10 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 @Slf4j
 public class ServiceAdvisor {
-    private ProjectDAO projectDAO;
-    private TaskDAO taskDAO;
+    private ProjectRepository projectDAO;
+    private TaskRepository taskDAO;
 
-    public ServiceAdvisor(ProjectDAO projectDAO) {
+    public ServiceAdvisor(ProjectRepository projectDAO) {
         this.projectDAO = projectDAO;
     }
 
@@ -70,7 +70,7 @@ public class ServiceAdvisor {
         executeAdvice(username, task.getProjectId());
         if (task.getId()!=null){
             Task taskEntity = taskDAO.findById(task.getId()).orElseThrow(() -> new EmptyResultDataAccessException(1));
-            if (taskDAO.findAllTaskByProjectId(taskEntity.getProjectId()).stream().noneMatch(t-> t.getId()== task.getId())){
+            if (taskDAO.findAllTaskByProjectId(taskEntity.getProject().getId()).stream().noneMatch(t-> t.getId()== task.getId())){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
@@ -79,6 +79,6 @@ public class ServiceAdvisor {
     private void executeAdvice(String username, int projectId){
         log.debug("Before the service method");
         Project projectEntity = projectDAO.findById(projectId).orElseThrow(()->new EmptyResultDataAccessException(1));
-        if(!projectEntity.getUsername().matches(username)) throw new AccessDeniedException();
+        if(!projectEntity.getUser().getUsername().matches(username)) throw new AccessDeniedException();
     }
 }

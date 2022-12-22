@@ -4,23 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import javax.persistence.*;
 import java.io.Serializable;
 
-@Data @AllArgsConstructor @NoArgsConstructor
-public class Task implements Serializable, SuperEntity {
-
+@Data @AllArgsConstructor @NoArgsConstructor @Entity
+public class Task implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
     private String content;
-    private Status status=Status.NOT_COMPLETED;
-    private int projectId;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @JoinColumn(name = "project_id",referencedColumnName = "id",nullable = false)
+    @ManyToOne
+    private Project project;
+
     public enum Status{
         COMPLETED, NOT_COMPLETED
     }
 
-    public Task(String content, Status status, int projectId) {
+    public Task(String content, Status status, Project project) {
         this.content = content;
         this.status = status;
-        this.projectId = projectId;
+        this.project = project;
     }
 }
