@@ -32,7 +32,7 @@ public class TaskDAOImpl implements TaskDAO {
           PreparedStatement statement = con.prepareStatement("INSERT INTO Task (content, status, project_id) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
           statement.setString(1,task.getContent());
           statement.setString(2,task.getStatus().toString());
-          statement.setInt(3,task.getId());
+          statement.setInt(3,task.getProjectId());
           return statement;
       },keyHolder);
       task.setId(keyHolder.getKey().intValue());

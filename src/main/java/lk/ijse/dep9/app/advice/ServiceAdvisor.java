@@ -65,7 +65,7 @@ public class ServiceAdvisor {
     }
 
 
-    @Before(value = "serviceAuthorization() && args(username,task, ..)", argNames = "username,task")
+    @Before(value = "serviceAuthorization() && args(username,task)", argNames = "username,task")
     private void serviceAuthorization(String username, TaskDTO task){
         executeAdvice(username, task.getProjectId());
         if (task.getId()!=null){
