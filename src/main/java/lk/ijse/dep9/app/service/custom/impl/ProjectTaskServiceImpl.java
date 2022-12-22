@@ -3,6 +3,7 @@ package lk.ijse.dep9.app.service.custom.impl;
 import lk.ijse.dep9.app.dao.custom.ProjectDAO;
 import lk.ijse.dep9.app.dao.custom.TaskDAO;
 import lk.ijse.dep9.app.dto.ProjectDTO;
+import lk.ijse.dep9.app.dto.TaskDTO;
 import lk.ijse.dep9.app.entity.Project;
 import lk.ijse.dep9.app.exceptions.AccessDeniedException;
 import lk.ijse.dep9.app.service.custom.ProjectTaskService;
@@ -60,5 +61,21 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 //        if (!project.getUsername().matches(username)) throw new AccessDeniedException();
         taskDAO.findAllTaskByProjectId(projectId).forEach(task -> taskDAO.deleteById(task.getId()));
         projectDAO.deleteById(projectId);
+    }
+
+    @Override
+    public TaskDTO createNewTask(String username, TaskDTO taskDTO) {
+
+        return null;
+    }
+
+    @Override
+    public void renameTask(String username, TaskDTO task) {
+
+    }
+
+    @Override
+    public void deleteTask(String username, TaskDTO taskDTO) {
+
     }
 }
